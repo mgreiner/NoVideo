@@ -7,23 +7,50 @@
 //
 
 #import "TSViewController.h"
+#import "MPAdView.h"
 
-@interface TSViewController ()
+@interface TSViewController () <MPAdViewDelegate>
+
+@property (retain, nonatomic) IBOutlet UITextField *adUnitIDTextField;
+@property (retain, nonatomic) IBOutlet UITextField *keywordsTextField;
+
+@property (retain, nonatomic) UIViewController *adViewController;
 
 @end
 
 @implementation TSViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+- (void)dealloc {
+    [_adUnitIDTextField release], _adUnitIDTextField = nil;
+    [_keywordsTextField release], _keywordsTextField = nil;
+    [_adViewController release], _adViewController = nil;
+    [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    if ([segue.identifier isEqualToString:@"RequestAd"])
+    {
+        self.adViewController = (UIViewController *)segue.destinationViewController;
+        
+        MPInterstitialAdView *adView = [[MPInterstitialAdView alloc] initWithAdUnitId:self.adUnitIDTextField.text size:self.adViewController.view.frame.size];
+        adView.delegate = self;
+        adView.keywords = self.keywordsTextField.text;
+        
+        [self.adViewController.view addSubview:adView];
+        [adView loadAd];
+        [adView release];
+    }
+}
+
+-(UIViewController *)viewControllerForPresentingModalView
+{
+    return self.adViewController;
+}
+
+-(void)didDismissModalViewForAd:(MPAdView *)view
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "TSAppDelegate.h"
+#import "MPAdView.h"
 
 @implementation TSAppDelegate
 
@@ -18,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    MPLogSetLevel(MPLogLevelAll);
     return YES;
 }
 							

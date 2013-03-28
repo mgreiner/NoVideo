@@ -1,0 +1,3 @@
+[submodule "mopub-client"]
+	path = mopub-client
+	url = git@github.com:mopub/mopub-client.git
