@@ -7,15 +7,18 @@
 //
 
 #import "TSViewController.h"
-#import "MPAdView.h"
+#import "MPInterstitialAdController.h"
 
-@interface TSViewController () <MPAdViewDelegate>
+@interface TSViewController () <MPInterstitialAdControllerDelegate>
 
 @property (retain, nonatomic) IBOutlet UITextField *adUnitIDTextField;
 @property (retain, nonatomic) IBOutlet UITextField *keywordsTextField;
 
-@property (retain, nonatomic) UIViewController *adViewController;
+- (IBAction)requestAd:(id)sender;
 
+@end
+
+@interface TSInterstitialSegue : UIStoryboardSegue
 @end
 
 @implementation TSViewController
@@ -23,32 +26,24 @@
 - (void)dealloc {
     [_adUnitIDTextField release], _adUnitIDTextField = nil;
     [_keywordsTextField release], _keywordsTextField = nil;
-    [_adViewController release], _adViewController = nil;
     [super dealloc];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (IBAction)requestAd:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"RequestAd"])
-    {
-        self.adViewController = (UIViewController *)segue.destinationViewController;
-        
-        MPInterstitialAdView *adView = [[MPInterstitialAdView alloc] initWithAdUnitId:self.adUnitIDTextField.text size:self.adViewController.view.frame.size];
-        adView.delegate = self;
-        adView.keywords = self.keywordsTextField.text;
-        
-        [self.adViewController.view addSubview:adView];
-        [adView loadAd];
-        [adView release];
-    }
+    MPInterstitialAdController *adViewController = [MPInterstitialAdController interstitialAdControllerForAdUnitId:self.adUnitIDTextField.text];
+    adViewController.delegate = self;
+    adViewController.keywords = self.keywordsTextField.text;
+    [adViewController loadAd];
 }
 
--(UIViewController *)viewControllerForPresentingModalView
+-(void)interstitialDidLoadAd:(MPInterstitialAdController *)interstitial
 {
-    return self.adViewController;
+    interstitial.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [interstitial showFromViewController:self];
 }
 
--(void)didDismissModalViewForAd:(MPAdView *)view
+-(void)interstitialDidDisappear:(MPInterstitialAdController *)interstitial
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
