@@ -33,9 +33,10 @@
     {
         self.adViewController = (UIViewController *)segue.destinationViewController;
         
-        MPInterstitialAdView *adView = [[MPInterstitialAdView alloc] initWithAdUnitId:self.adUnitIDTextField.text size:self.adViewController.view.frame.size];
+        MPAdView *adView = [[MPAdView alloc] initWithAdUnitId:self.adUnitIDTextField.text size:MOPUB_BANNER_SIZE];
         adView.delegate = self;
         adView.keywords = self.keywordsTextField.text;
+        adView.frame = CGRectMake(0, CGRectGetMaxY(self.view.bounds) - MOPUB_BANNER_SIZE.height, MOPUB_BANNER_SIZE.width, MOPUB_BANNER_SIZE.height);
         
         [self.adViewController.view addSubview:adView];
         [adView loadAd];
