@@ -8,6 +8,7 @@
 
 #import "TSAppDelegate.h"
 #import "MPAdView.h"
+#import "MPLogging.h"
 
 @implementation TSAppDelegate
 
